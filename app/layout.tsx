@@ -25,6 +25,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="icon" href="/Logo.svg" sizes="any" />
+        <link rel="manifest" href="/manifest.json" />
       </head>
       <body className={poppins.className}>
         <ToastProvider>

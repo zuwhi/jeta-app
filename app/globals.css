@@ -22,6 +22,9 @@
 .text-primary {
   color: #50b6bb !important;
 }
+.tilt-marker {
+  transform: rotate(45deg); /* Tilt marker */
+}
 
 .grey-bg {
   background: #c8c7cc;

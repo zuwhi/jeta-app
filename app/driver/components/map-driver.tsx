@@ -26,7 +26,7 @@ const getDistance = (coord1: Koordinat, coord2: Koordinat) => {
   return R * c;
 };
 
-const MapDirection = ({ setNearbyPassengers ,isCanFocusMap, isStopShareLocation}: {setNearbyPassengers: any, isCanFocusMap: boolean, isStopShareLocation: boolean}) => {
+const MapDirection = ({ setNearbyPassengers, isCanFocusMap, isStopShareLocation }: { setNearbyPassengers: any; isCanFocusMap: boolean; isStopShareLocation: boolean }) => {
   const router = useRouter();
   const { profile } = useProfile();
 
@@ -75,7 +75,6 @@ const MapDirection = ({ setNearbyPassengers ,isCanFocusMap, isStopShareLocation}
       console.error("Connection error: ", err);
     });
 
-  
     return () => {
       socket.disconnect();
     };
@@ -94,14 +93,15 @@ const MapDirection = ({ setNearbyPassengers ,isCanFocusMap, isStopShareLocation}
         };
         console.log("Data to be sent to backend:", data);
 
-       isStopShareLocation ? socket.emit("locationUpdate", data) : null;
+        isStopShareLocation ? socket.emit("locationUpdate", data) : null;
       },
       (error) => {
         console.error("Error getting user location:", error);
       },
       {
         enableHighAccuracy: true,
-        timeout: 5000,
+
+        timeout: 1000,
         maximumAge: 0,
       }
     );
