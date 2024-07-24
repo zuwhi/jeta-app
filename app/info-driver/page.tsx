@@ -1,17 +1,43 @@
 "use client";
 import { useEffect, useState } from "react";
-import { dummyDriver } from "../data/dummy_driver";
-import { DetailDriver } from "../type/detail_driver";
-import Link from "next/link";
+import Cookies from "js-cookie";
 import ButtonBack from "../global_component/button_back";
+import { Profile } from "../type/profile_type";
+import axios from "axios";
 
 export default function Page() {
-  const [dataDriver, setDataDriver] = useState<DetailDriver[] | null>(dummyDriver);
-  const [filteredDrivers, setFilteredDrivers] = useState<DetailDriver[] | null>(dummyDriver);
-  const [selectedDriver, setSelectedDriver] = useState<DetailDriver | null>(null);
+  const [dataDriver, setDataDriver] = useState<Profile[] | null>(null);
+  const [filteredDrivers, setFilteredDrivers] = useState<Profile[] | null>(null);
+  const [selectedDriver, setSelectedDriver] = useState<Profile | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const handleViewDetails = (driver: DetailDriver) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = Cookies.get("accessToken");
+
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL!}/getAllDriver`,
+
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const result = await response.data;
+        console.log("Data Driver:", result);
+        setDataDriver(result.drivers);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleViewDetails = (driver: Profile) => {
     setSelectedDriver(driver);
   };
 
@@ -49,20 +75,22 @@ export default function Page() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {filteredDrivers?.map((driver) => (
-                <tr key={driver.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{driver.firstname}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{driver.route}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <div className={`badge py-1 px-3 text-white ${driver.status === "on" ? "bg-accent" : "bg-red-500"}`}>{driver.status}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <button className="text-indigo-600 hover:text-indigo-900" onClick={() => handleViewDetails(driver)}>
-                      Lihat Detail
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {filteredDrivers &&
+                filteredDrivers.length > 0 &&
+                filteredDrivers.map((driver) => (
+                  <tr key={driver.id}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{driver.firstname}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{driver.route}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <div className={`badge py-1 px-3 text-white ${driver.status === "Active" ? "bg-accent" : "bg-red-500"}`}>{driver.status}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <button className="text-indigo-600 hover:text-indigo-900" onClick={() => handleViewDetails(driver)}>
+                        Lihat Detail
+                      </button>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>

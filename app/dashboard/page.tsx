@@ -127,7 +127,7 @@ export default function Dashboard() {
       case "hujan ringan":
         setIconWeather("icons/hujan.svg");
         break;
-      case "cerah berawan" || "cerah":
+      case "cerah berawan":
         setIconWeather("icons/cerah.svg");
         break;
       default:
@@ -165,7 +165,7 @@ export default function Dashboard() {
       <div className="relative">
         <div className="relative pt-3 primary h-screen z-0">
           <div className="navbar py-2">
-            <div className="flex-1">
+            <div className="flex-1 cursor-pointer" onClick={() => router.push("/profile")}>
               <div className="w-11 mx-2 rounded-full">
                 <Image src="icons/avatar.svg" width={500} height={500} alt="Logo" />
               </div>
@@ -199,8 +199,13 @@ export default function Dashboard() {
                   </div>
                 </div>
               ) : (
-                <div className="flex-1 flex justify-center items-center">
-                  <span className="loading loading-spinner text-white"></span>
+                <div className="flex-1 flex p-4 flex-col justify-center">
+                  <span className="text-white font-medium text-4xl">28°</span>
+                  <span className="text-white text-lg font-medium">Cerah Berawan</span>
+                  <div className="flex">
+                    <Image className="h-4 w-4 mr-1" src="icons/loc.svg" width={500} height={500} alt="Logo" />
+                    <span className="text-white text-sm font-medium">Jepara</span>
+                  </div>
                 </div>
               )}
 

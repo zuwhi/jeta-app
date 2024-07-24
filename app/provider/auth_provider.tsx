@@ -2,18 +2,9 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
+import { Profile } from "../type/profile_type";
 
-interface Profile {
-  email: string;
-  firstname: string;
-  id: number;
-  lastname: string;
-  operational_time: string;
-  phone_number: string;
-  role: string;
-  route: string;
-  username: string;
-}
+
 
 interface ProfileContextType {
   profile: Profile | null;

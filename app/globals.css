@@ -25,7 +25,10 @@
 .tilt-marker {
   transform: rotate(45deg); /* Tilt marker */
 }
-
+.tr-spacing td {
+  padding-top: 8px; /* Sesuaikan jarak sesuai kebutuhan */
+  padding-bottom: 8px; /* Sesuaikan jarak sesuai kebutuhan */
+}
 .grey-bg {
   background: #c8c7cc;
 }

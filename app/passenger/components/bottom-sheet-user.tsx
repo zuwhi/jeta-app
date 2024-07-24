@@ -5,6 +5,7 @@ import Image from "next/image";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { DetailDriver } from "@/app/type/detail_driver";
+import { Profile } from "@/app/type/profile_type";
 interface BottomSheetUserProps {
   isBottomSheetUserOpen: boolean;
   setBottomSheetUserOpen: (open: boolean) => void;
@@ -15,7 +16,7 @@ export default function BottomSheetUser({ isBottomSheetUserOpen, setBottomSheetU
   const ref = useRef<SheetRef>();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [detailsUser, setDetailUser] = useState<DetailDriver | null>();
+  const [detailsUser, setDetailUser] = useState<Profile | null>();
   useEffect(() => {
     const fetchDetailUser = async () => {
       try {
@@ -80,7 +81,7 @@ export default function BottomSheetUser({ isBottomSheetUserOpen, setBottomSheetU
                     </div>
                     <div className="w-[60%] flex items-center">{detailsUser && detailsUser.firstname + " " + detailsUser.lastname}</div>
                     <div className="w-[20%] flex items-center justify-end">
-                      <div className="bg-accent px-5 py-1 rounded text-white">Aktif</div>
+                      <div className={`${detailsUser && detailsUser.status === "active" ? "bg-accent" : "bg-error"}  px-5 py-1 rounded text-white`}>{detailsUser && detailsUser.status}</div>
                     </div>
                   </div>
                   <div className="w-full px-5 mt-4">
@@ -88,11 +89,11 @@ export default function BottomSheetUser({ isBottomSheetUserOpen, setBottomSheetU
                       <tbody>
                         <tr>
                           <td className="text-left">Plat Nomor :</td>
-                          <td className="text-right font-medium">K 4020 4</td>
+                          <td className="text-right font-medium">{detailsUser && detailsUser.angkutan_number}</td>
                         </tr>
                         <tr>
-                          <td className="text-left">Alamat :</td>
-                          <td className="text-right font-medium">{detailsUser && detailsUser.status}</td>
+                          <td className="text-left">Brand Mobil :</td>
+                          <td className="text-right font-medium">{detailsUser && detailsUser.brand_car}</td>
                         </tr>
                         <tr>
                           <td className="text-left">Jam Kerja :</td>
