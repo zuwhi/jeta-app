@@ -81,7 +81,7 @@ export default function BottomSheetUser({ isBottomSheetUserOpen, setBottomSheetU
                     </div>
                     <div className="w-[60%] flex items-center">{detailsUser && detailsUser.firstname + " " + detailsUser.lastname}</div>
                     <div className="w-[20%] flex items-center justify-end">
-                      <div className={`${detailsUser && detailsUser.status === "active" ? "bg-accent" : "bg-error"}  px-5 py-1 rounded text-white`}>{detailsUser && detailsUser.status}</div>
+                      <div className={`${detailsUser && detailsUser.status == "Active" ? "bg-accent" : "bg-error"}  px-5 py-1 rounded text-white`}>{detailsUser && detailsUser.status}</div>
                     </div>
                   </div>
                   <div className="w-full px-5 mt-4">

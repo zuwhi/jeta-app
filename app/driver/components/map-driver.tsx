@@ -62,7 +62,7 @@ const MapDirection = ({ setNearbyPassengers, isCanFocusMap, isStopShareLocation 
       socket.emit("requestAllPassengerLocations", {});
 
       socket.on("allPassengerLocations", (passenger) => {
-        console.log("Received data: ", passenger);
+        // console.log("Received data: ", passenger);
         setListPassenger(passenger);
       });
     });
