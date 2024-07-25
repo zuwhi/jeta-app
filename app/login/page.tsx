@@ -4,6 +4,7 @@ import Image from "next/image";
 import SignUpSection from "./components/signup-section";
 import LoginSection from "./components/login-section";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 const Page = () => {
   const router = useRouter();
   const [isLogin, setIsLogin] = useState(0);
@@ -35,9 +36,9 @@ const Page = () => {
           <div className="w-full  px-5  ">{isLogin == 0 ? <LoginSection></LoginSection> : <SignUpSection></SignUpSection>}</div>
         </div>
         <div className="w-full px-5">
-          <button onClick={() => login()} className="my-7 btn grey-bg text-white w-full">
-            Masuk tanpa akun
-          </button>
+          <Link href="/guest">
+            <div className="my-7 btn grey-bg text-white w-full">Masuk tanpa akun</div>
+          </Link>
         </div>
       </div>
 

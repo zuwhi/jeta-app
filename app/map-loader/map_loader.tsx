@@ -15,17 +15,9 @@ interface MapLoaderProps {
 const MapLoader: React.FC<MapLoaderProps> = ({ center, children,zoom, containerStyle= { width: "100%", height: "100vh" } }) => {
   const { isLoaded, loadError } = useLoadScript({ id: "google-map-script", googleMapsApiKey: process.env.NEXT_PUBLIC_MAPS_API_KEY!, libraries });
 
-  // if (loadError) {
-  //   return <div>Error loading maps</div>;
-  // }
-
-  // if (!isLoaded) {
-  //   return <div>Loading Maps</div>;
-  // }
 
   return (
     <div className="min-h-screen w-full z-0">
-      {/* <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_MAPS_API_KEY!} libraries={libraries} > */}
       {isLoaded && (
         <div className="min-h-screen w-full z-0">
           <GoogleMap
@@ -61,7 +53,7 @@ const MapLoader: React.FC<MapLoaderProps> = ({ center, children,zoom, containerS
           </GoogleMap>
         </div>
       )}
-      {/* </LoadScript> */}
+
     </div>
   );
 };
