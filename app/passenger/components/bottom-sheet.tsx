@@ -5,6 +5,7 @@ import Image from "next/image";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { DetailDriver } from "@/app/type/detail_driver";
+import { Profile } from "@/app/type/profile_type";
 export default function BottomSheet({
   direction,
   isInputActive,
@@ -23,7 +24,7 @@ export default function BottomSheet({
   const ref = useRef<SheetRef>();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [detailsUser, setDetailUser] = useState<DetailDriver | null>();
+  const [detailsUser, setDetailUser] = useState<Profile | null>();
   useEffect(() => {
     const fetchDetailUser = async () => {
       try {
