@@ -1,6 +1,6 @@
 "use client";
 import { GoogleMap, Marker, DirectionsRenderer, useLoadScript, Libraries } from "@react-google-maps/api";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import axios from "axios";
 
@@ -72,7 +72,7 @@ const MapOne = ({}: {}) => {
   }, []);
 
   useEffect(() => {
-      const socket = io(process.env.NEXT_PUBLIC_BACKEND_URL!, { transports: ["websocket"] });
+    const socket = io(process.env.NEXT_PUBLIC_BACKEND_URL!, { transports: ["websocket"] });
     socket.on("connect", () => {
       socket.emit("requestAllDriverLocations", {});
 
@@ -166,157 +166,160 @@ const MapOne = ({}: {}) => {
   const { isLoaded, loadError } = useLoadScript({ id: "google-map-script", googleMapsApiKey: process.env.NEXT_PUBLIC_MAPS_API_KEY!, libraries });
 
   return (
-    <div className="x relative w-full items-center">
-      <div className="z-10 absolute top-2 left-2 ">
-        <div className="w-12 h-12 shadow-xl items-center text-3xl rounded-full flex justify-center avatar bg-white">
-          <ButtonBack></ButtonBack>
+    <Suspense>
+      {" "}
+      <div className="x relative w-full items-center">
+        <div className="z-10 absolute top-2 left-2 ">
+          <div className="w-12 h-12 shadow-xl items-center text-3xl rounded-full flex justify-center avatar bg-white">
+            <ButtonBack></ButtonBack>
+          </div>
+        </div>
+        <div className="col-span-12 rounded-sm border border-stroke bg-white  shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-7">
+          <div className="min-h-screen w-full z-0">
+            {isLoaded && (
+              <GoogleMap
+                mapContainerStyle={{ width: "100%", height: "100vh" }}
+                center={mapCenter}
+                zoom={16}
+                options={{
+                  zoomControl: false,
+                  streetViewControl: false,
+                  mapTypeControl: false,
+                  gestureHandling: "greedy",
+                  fullscreenControl: false,
+                  styles: [
+                    {
+                      featureType: "all",
+                      elementType: "labels",
+                      stylers: [{ visibility: "off" }],
+                    },
+                    {
+                      featureType: "road",
+                      elementType: "geometry",
+                      stylers: [{ visibility: "simplified" }],
+                    },
+                    {
+                      featureType: "road",
+                      elementType: "labels",
+                      stylers: [{ visibility: "off" }],
+                    },
+                  ],
+                }}
+              >
+                {origin && <Marker position={origin} icon={{ url: "/icons/passenger.svg" }} />}
+
+                {listDriver?.map((data) => (
+                  <Marker
+                    key={data.driver_id}
+                    position={data.origin}
+                    icon={{ url: "/icons/buss.svg" }}
+                    onClick={() => {
+                      setBottomSheetUserOpen(true);
+                      setDriverId(data.driver_id);
+                    }}
+                  />
+                ))}
+
+                {!filteredDestinations?.length
+                  ? allDestinations?.map((destination, i) =>
+                      destination.destinations.map((dest, index) => {
+                        const split = dest.split(",");
+                        return (
+                          <Marker
+                            key={index}
+                            label={{
+                              text: `${i + 1}`,
+                              color: "white",
+                              fontSize: "14px",
+                              fontWeight: "bold",
+                            }}
+                            position={{
+                              lat: Number(split[0]),
+                              lng: Number(split[1]),
+                            }}
+                          />
+                        );
+                      })
+                    )
+                  : filteredDestinations?.map((destination, i) =>
+                      destination.destinations.map((dest, index) => {
+                        const split = dest.split(",");
+                        return (
+                          <Marker
+                            key={index}
+                            label={{
+                              text: `${i + 1}`,
+                              color: "white",
+                              fontSize: "14px",
+                              fontWeight: "bold",
+                            }}
+                            position={{
+                              lat: Number(split[0]),
+                              lng: Number(split[1]),
+                            }}
+                          />
+                        );
+                      })
+                    )}
+
+                {!filteredDestinations?.length
+                  ? allDestinations?.map((destination, i) => (
+                      <Marker
+                        key={i}
+                        icon={{ url: "/icons/destination-marker.svg" }}
+                        position={{
+                          lat: Number(destination.origin.split(",")[0]),
+                          lng: Number(destination.origin.split(",")[1]),
+                        }}
+                      />
+                    ))
+                  : filteredDestinations?.map((destination, i) => (
+                      <Marker
+                        key={i}
+                        icon={{ url: "/icons/destination-marker.svg" }}
+                        position={{
+                          lat: Number(destination.origin.split(",")[0]),
+                          lng: Number(destination.origin.split(",")[1]),
+                        }}
+                      />
+                    ))}
+
+                {!filteredDestinations?.length
+                  ? directions.map((direction, index) => (
+                      <DirectionsRenderer
+                        key={index}
+                        options={{
+                          polylineOptions: {
+                            strokeColor: getColorForDriver((direction.routes[0] as any).driverId),
+                            strokeOpacity: 0.4,
+                            strokeWeight: 5,
+                          },
+                          markerOptions: { opacity: 0 },
+                        }}
+                        directions={direction}
+                      />
+                    ))
+                  : directionsFiltered && (
+                      <DirectionsRenderer
+                        directions={directionsFiltered}
+                        options={{
+                          polylineOptions: {
+                            strokeColor: "orange",
+                            strokeOpacity: 0.8,
+                            strokeWeight: 6,
+                          },
+                          markerOptions: {
+                            opacity: 0,
+                          },
+                        }}
+                      />
+                    )}
+              </GoogleMap>
+            )}
+          </div>
         </div>
       </div>
-      <div className="col-span-12 rounded-sm border border-stroke bg-white  shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-7">
-        <div className="min-h-screen w-full z-0">
-          {isLoaded && (
-            <GoogleMap
-              mapContainerStyle={{ width: "100%", height: "100vh" }}
-              center={mapCenter}
-              zoom={16}
-              options={{
-                zoomControl: false,
-                streetViewControl: false,
-                mapTypeControl: false,
-                gestureHandling: "greedy",
-                fullscreenControl: false,
-                styles: [
-                  {
-                    featureType: "all",
-                    elementType: "labels",
-                    stylers: [{ visibility: "off" }],
-                  },
-                  {
-                    featureType: "road",
-                    elementType: "geometry",
-                    stylers: [{ visibility: "simplified" }],
-                  },
-                  {
-                    featureType: "road",
-                    elementType: "labels",
-                    stylers: [{ visibility: "off" }],
-                  },
-                ],
-              }}
-            >
-              {origin && <Marker position={origin} icon={{ url: "/icons/passenger.svg" }} />}
-
-              {listDriver?.map((data) => (
-                <Marker
-                  key={data.driver_id}
-                  position={data.origin}
-                  icon={{ url: "/icons/buss.svg" }}
-                  onClick={() => {
-                    setBottomSheetUserOpen(true);
-                    setDriverId(data.driver_id);
-                  }}
-                />
-              ))}
-
-              {!filteredDestinations?.length
-                ? allDestinations?.map((destination, i) =>
-                    destination.destinations.map((dest, index) => {
-                      const split = dest.split(",");
-                      return (
-                        <Marker
-                          key={index}
-                          label={{
-                            text: `${i + 1}`,
-                            color: "white",
-                            fontSize: "14px",
-                            fontWeight: "bold",
-                          }}
-                          position={{
-                            lat: Number(split[0]),
-                            lng: Number(split[1]),
-                          }}
-                        />
-                      );
-                    })
-                  )
-                : filteredDestinations?.map((destination, i) =>
-                    destination.destinations.map((dest, index) => {
-                      const split = dest.split(",");
-                      return (
-                        <Marker
-                          key={index}
-                          label={{
-                            text: `${i + 1}`,
-                            color: "white",
-                            fontSize: "14px",
-                            fontWeight: "bold",
-                          }}
-                          position={{
-                            lat: Number(split[0]),
-                            lng: Number(split[1]),
-                          }}
-                        />
-                      );
-                    })
-                  )}
-
-              {!filteredDestinations?.length
-                ? allDestinations?.map((destination, i) => (
-                    <Marker
-                      key={i}
-                      icon={{ url: "/icons/destination-marker.svg" }}
-                      position={{
-                        lat: Number(destination.origin.split(",")[0]),
-                        lng: Number(destination.origin.split(",")[1]),
-                      }}
-                    />
-                  ))
-                : filteredDestinations?.map((destination, i) => (
-                    <Marker
-                      key={i}
-                      icon={{ url: "/icons/destination-marker.svg" }}
-                      position={{
-                        lat: Number(destination.origin.split(",")[0]),
-                        lng: Number(destination.origin.split(",")[1]),
-                      }}
-                    />
-                  ))}
-
-              {!filteredDestinations?.length
-                ? directions.map((direction, index) => (
-                    <DirectionsRenderer
-                      key={index}
-                      options={{
-                        polylineOptions: {
-                          strokeColor: getColorForDriver((direction.routes[0] as any).driverId),
-                          strokeOpacity: 0.4,
-                          strokeWeight: 5,
-                        },
-                        markerOptions: { opacity: 0 },
-                      }}
-                      directions={direction}
-                    />
-                  ))
-                : directionsFiltered && (
-                    <DirectionsRenderer
-                      directions={directionsFiltered}
-                      options={{
-                        polylineOptions: {
-                          strokeColor: "orange",
-                          strokeOpacity: 0.8,
-                          strokeWeight: 6,
-                        },
-                        markerOptions: {
-                          opacity: 0,
-                        },
-                      }}
-                    />
-                  )}
-            </GoogleMap>
-          )}
-        </div>
-      </div>
-    </div>
+    </Suspense>
   );
 };
 
