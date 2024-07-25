@@ -12,8 +12,18 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Jepara E Transport Application",
+  title: "Jeta",
   description: "Jepara E Transport Aplication",
+  authors: [
+    {
+      name: "Reihan Saputra",
+      url: "https://jeta-app.com",
+    },
+  ],
+  icons: {
+    icon: "/Logo.svg",
+  },
+  keywords: ["Jeta","Jepara E Transport Aplication","jeta-app", "transport", "unisnu", "pkm", "jepara", "tracking", "real time"],
 };
 
 export default function RootLayout({
