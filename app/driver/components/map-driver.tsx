@@ -83,13 +83,14 @@ const MapDirection = ({ setNearbyPassengers, isCanFocusMap, isStopShareLocation 
   useEffect(() => {
     const watchId = navigator.geolocation.watchPosition(
       (position) => {
-        const { latitude, longitude } = position.coords;
+        const { latitude, longitude, heading } = position.coords;
         const userLatLng = { lat: latitude, lng: longitude };
         setOrigin(userLatLng);
+
         const data = {
           driver_id: profile?.id || 0,
           origin: userLatLng,
-          heading: 90,
+          heading: heading,
         };
         console.log("Data to be sent to backend:", data);
 
