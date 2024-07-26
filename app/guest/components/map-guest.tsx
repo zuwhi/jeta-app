@@ -3,9 +3,8 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import axios from "axios";
 import { useProfile } from "@/app/provider/auth_provider";
-import BottomSheetUser from "./bottom-sheet-user";
+
 import { Koordinat } from "@/app/type/koordinat_type";
-import socket from "@/app/socket/socket";
 
 interface DriverResponse {
   driver_id: number;
@@ -41,7 +40,6 @@ const getColorForDriver = (driverId: number) => {
 const MapDirection = ({ isCanFocusMap }: { isCanFocusMap: boolean }) => {
   const { profile } = useProfile();
   const [mapCenter, setMapCenter] = useState<Koordinat>({ lat: -6.618650409604555, lng: 110.68881761754635 });
-  const [origin, setOrigin] = useState<Koordinat | null>(null);
   const [directions, setDirections] = useState<google.maps.DirectionsResult[]>([]);
   const [listDriver, setListDriver] = useState<DriverResponse[] | null>(null);
   const [isBottomSheetUserOpen, setBottomSheetUserOpen] = useState(false);
@@ -82,37 +80,6 @@ const MapDirection = ({ isCanFocusMap }: { isCanFocusMap: boolean }) => {
       console.error("Connection error: ", err);
     });
   }, [listDriver]);
-
-  useEffect(() => {
-    isCanFocusMap && setMapCenter(origin || { lat: -6.618650409604555, lng: 110.68881761754635 });
-    if (navigator.geolocation && profile) {
-      const watchId = navigator.geolocation.watchPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          const userLatLng = { lat: latitude, lng: longitude };
-          setOrigin(userLatLng);
-
-          socket.emit("passengerLocationUpdate", {
-            passenger_id: profile?.id,
-            lat: userLatLng.lat,
-            lng: userLatLng.lng,
-          });
-        },
-        (error) => {
-          console.error("Error getting user location:", error);
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 5000,
-          maximumAge: 0,
-        }
-      );
-
-      return () => {
-        navigator.geolocation.clearWatch(watchId);
-      };
-    }
-  }, [origin, isCanFocusMap]);
 
   const getDistance = ({ lat1, lon1, lat2, lon2 }: { lat1: number; lon1: number; lat2: number; lon2: number }) => {
     const R = 6371;
@@ -191,8 +158,6 @@ const MapDirection = ({ isCanFocusMap }: { isCanFocusMap: boolean }) => {
           ],
         }}
       >
-        {origin && <Marker position={origin} icon={{ url: "/icons/passenger.svg" }} />}
-
         {listDriver?.map((data) => (
           <Marker
             key={data.driver_id}
