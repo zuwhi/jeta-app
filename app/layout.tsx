@@ -23,22 +23,6 @@ export const metadata: Metadata = {
   icons: {
     icon: "/Logo.svg",
   },
-  openGraph: {
-    type: "website",
-    locale: "id_ID",
-    url: "https://jeta-app.com",
-    title: "Jeta - Jepara E Transport Application",
-    description: "Aplikasi untuk tracking real-time transportasi publik di Jepara.",
-    images: [
-      {
-        url: "/Logo.svg",
-        width: 800,
-        height: 600,
-        alt: "Jeta Logo",
-      },
-    ],
-  },
-  keywords: ["Jeta", "Jepara E Transport Aplication", "jeta-app", "transport", "unisnu", "pkm", "jepara", "tracking", "real time"],
 };
 
 export default function RootLayout({
